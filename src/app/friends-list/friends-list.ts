@@ -8,13 +8,15 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './friends-list.css',
 })
 export class FriendsList {
-  readonly friends = ['Sami', 'Sarra', 'Amine'];
+  readonly friends = signal(['Ahmed', 'Ahmed', 'Ahmed']);
 
-  // Valeur partagée par les 3 champs : illustre les 3 formes de data-binding
-  readonly name = signal('Ahmed');
+  updateFriend(index: number, value: string): void {
+    this.friends.update((current) =>
+      current.map((friend, friendIndex) => (friendIndex === index ? value : friend)),
+    );
+  }
 
-  // Event binding : on met à jour le signal à la main à partir de l'événement DOM
-  onInput(event: Event): void {
-    this.name.set((event.target as HTMLInputElement).value);
+  onInput(index: number, event: Event): void {
+    this.updateFriend(index, (event.target as HTMLInputElement).value);
   }
 }

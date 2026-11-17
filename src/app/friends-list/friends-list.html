@@ -5,16 +5,16 @@
       <h2>Liste des amis</h2>
 
       <div class="bindings">
-        <!-- 1. Property binding (modèle → vue) : la saisie ne modifie pas le modèle -->
-        <input type="text" [value]="name()" title="Property binding : [value]" aria-label="Property binding" />
+        <!-- 1. Property binding + event binding pour le premier ami -->
+        <input type="text" [value]="friends()[0]" (input)="onInput(0, $event)" title="Property binding : [value]" aria-label="Nom du premier ami" />
         <!-- 2. Property + event binding : on recrée "à la main" le two-way -->
-        <input type="text" [value]="name()" (input)="onInput($event)" title="Event binding : (input)" aria-label="Event binding" />
+        <input type="text" [value]="friends()[1]" (input)="onInput(1, $event)" title="Event binding : (input)" aria-label="Nom du deuxième ami" />
         <!-- 3. Two-way data binding (modèle ↔ vue) -->
-        <input type="text" [(ngModel)]="name" title="Two-way binding : [(ngModel)]" aria-label="Two-way binding" />
+        <input type="text" [ngModel]="friends()[2]" (ngModelChange)="updateFriend(2, $event)" title="Two-way binding : [(ngModel)]" aria-label="Nom du troisième ami" />
       </div>
 
       <ul>
-        @for (friend of friends; track friend) {
+        @for (friend of friends(); track $index) {
           <li>{{ friend }}</li>
         }
       </ul>
