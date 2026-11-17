@@ -3,44 +3,47 @@
     <div class="card__icon" aria-hidden="true">📅</div>
     <div>
       <h2>Liste des conférences à venir</h2>
-      <p class="subtitle">Cliquez sur une conférence pour afficher ses détails.</p>
+      <p class="subtitle">Cliquez sur le titre d'une conférence pour afficher ses détails.</p>
     </div>
   </div>
 
+  <!-- Two-way binding : la saisie met à jour le signal searchTerm -->
   <input
     class="search"
     type="search"
     placeholder="Taper le titre de la conférence"
-    aria-label="Rechercher une conférence par titre"
     [(ngModel)]="searchTerm"
   />
 
-  @if (conferences().length === 0) {
-    <p class="message">Aucune conférence n'est enregistrée pour le moment.</p>
-  } @else if (filtered().length === 0) {
-    <p class="message">Aucune conférence ne correspond à « {{ searchTerm() }} ».</p>
-  } @else {
-    <div class="grid">
-      @for (c of filtered(); track c.id) {
-        <article class="conf" [class.selected]="selectedId() === c.id" (click)="toggleDetails(c.id)">
-          <h3 tabindex="0" (keydown.enter)="toggleDetails(c.id)">{{ c.title | uppercase }}</h3>
-          <p><strong>Date :</strong> {{ c.date | date: 'dd/MM/yyyy' }}</p>
-          <p><strong>Lieu :</strong> {{ c.place }}</p>
-          <p><strong>Places restantes :</strong> {{ remainingPlaces(c) }}</p>
+  <div class="grid">
+    @for (c of filtered(); track c.id) {
+      <article class="conf" [class.selected]="selectedId() === c.id">
+        <h3 (click)="toggleDetails(c.id)">{{ c.title | uppercase }}</h3>
+        <p><strong>Date :</strong> {{ c.date | date: 'dd/MM/yyyy' }}</p>
+        <p><strong>Lieu :</strong> {{ c.place }}</p>
+        <p><strong>Places restantes :</strong> {{ remainingPlaces(c) }}</p>
 
-          @if (selectedId() === c.id) {
-            <p class="description">{{ c.description }}</p>
-          }
+        @if (selectedId() === c.id) {
+          <p class="description">{{ c.description }}</p>
+        }
 
-          <button
-            type="button"
-            class="btn"
-            [ngClass]="availability(c)"
-            [disabled]="availability(c) === 'full'"
-            (click)="register(c); $event.stopPropagation()"
-          >S'inscrire</button>
-        </article>
+        <!-- Couleur du bouton : vert / orangé (< 10 places) / rouge (complet) -->
+        <button
+          type="button"
+          class="btn"
+          [class.available]="remainingPlaces(c) >= 10"
+          [class.low]="remainingPlaces(c) > 0 && remainingPlaces(c) < 10"
+          [class.full]="remainingPlaces(c) === 0"
+          [disabled]="remainingPlaces(c) === 0"
+          (click)="register(c)"
+        >S'inscrire</button>
+      </article>
+    } @empty {
+      @if (conferences.length === 0) {
+        <p class="message">Aucune conférence n'est enregistrée pour le moment.</p>
+      } @else {
+        <p class="message">Aucune conférence ne correspond à votre recherche.</p>
       }
-    </div>
-  }
+    }
+  </div>
 </section>

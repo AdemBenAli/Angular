@@ -1,7 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { WritableSignal } from '@angular/core';
 import { ConferenceList } from './conference-list';
-import { Conference } from '../models/conference';
 
 describe('ConferenceList', () => {
   let fixture: ComponentFixture<ConferenceList>;
@@ -53,15 +51,43 @@ describe('ConferenceList', () => {
   });
 
   it("affiche un message quand aucune conférence n'est enregistrée", async () => {
-    (fixture.componentInstance as unknown as { conferences: WritableSignal<Conference[]> })
-      .conferences.set([]);
-    await fixture.whenStable();
-    expect(cards().length).toBe(0);
-    expect(el.querySelector('.message')?.textContent).toContain("Aucune conférence n'est enregistrée");
+    // Nouveau composant : on vide la liste avant le premier affichage
+    const f = TestBed.createComponent(ConferenceList);
+    f.componentInstance.conferences.splice(0);
+    await f.whenStable();
+    const html = f.nativeElement as HTMLElement;
+    expect(html.querySelectorAll('article').length).toBe(0);
+    expect(html.querySelector('.message')?.textContent).toContain("Aucune conférence n'est enregistrée");
   });
 
-  it('affiche les détails au clic sur une conférence', async () => {
-    cards()[1].click();
+  it('affiche un autre message quand la recherche ne donne aucun résultat', async () => {
+    const input = el.querySelector<HTMLInputElement>('input.search')!;
+    input.value = 'zzz';
+    input.dispatchEvent(new Event('input'));
+    await fixture.whenStable();
+    expect(cards().length).toBe(0);
+    expect(el.querySelector('.message')?.textContent).toContain('ne correspond');
+  });
+
+  it("n'affiche pas les conférences passées (seulement les conférences à venir)", async () => {
+    const f = TestBed.createComponent(ConferenceList);
+    f.componentInstance.conferences.push({
+      id: 99,
+      title: 'Ancienne conférence',
+      description: '',
+      date: new Date(2020, 0, 1),
+      place: 'Tunis',
+      maxParticipants: 10,
+      nbParticipants: 0,
+    });
+    await f.whenStable();
+    const titles = Array.from((f.nativeElement as HTMLElement).querySelectorAll('h3')).map((h) => h.textContent);
+    expect(titles).not.toContain('ANCIENNE CONFÉRENCE');
+    expect(titles.length).toBe(3);
+  });
+
+  it('affiche les détails au clic sur le titre d\'une conférence', async () => {
+    cards()[1].querySelector<HTMLElement>('h3')!.click();
     await fixture.whenStable();
     expect(cards()[1].querySelector('.description')).not.toBeNull();
   });

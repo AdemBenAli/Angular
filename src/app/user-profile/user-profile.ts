@@ -10,5 +10,5 @@ interface User {
   templateUrl: './user-profile.html',
 })
 export class UserProfile {
-  protected readonly user = signal<User>({ name: 'Ahmed', email: 'ahmed@email.com' });
+  readonly user = signal<User>({ name: 'Ahmed', email: 'ahmed@email.com' });
 }

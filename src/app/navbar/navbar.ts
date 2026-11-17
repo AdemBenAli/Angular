@@ -11,7 +11,7 @@ interface NavLink {
   styleUrl: './navbar.css',
 })
 export class Navbar {
-  protected readonly links: NavLink[] = [
+  readonly links: NavLink[] = [
     { label: 'Accueil', target: 'accueil' },
     { label: 'Profil', target: 'profil' },
     { label: 'Conférences', target: 'conferences' },
@@ -20,9 +20,9 @@ export class Navbar {
     { label: 'Admin', target: 'admin' }, // page à venir (routage : prosit suivant)
   ];
 
-  protected readonly active = signal('accueil');
+  readonly active = signal('accueil');
 
-  protected select(target: string): void {
+  select(target: string): void {
     this.active.set(target);
   }
 }

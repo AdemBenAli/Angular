@@ -9,5 +9,5 @@ import { DatePipe } from '@angular/common';
 })
 export class Footer {
   readonly appName = input('Conference App');
-  protected readonly today = new Date();
+  readonly today = new Date();
 }

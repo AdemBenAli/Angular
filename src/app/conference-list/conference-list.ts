@@ -1,21 +1,17 @@
 import { Component, computed, signal } from '@angular/core';
-import { DatePipe, NgClass, UpperCasePipe } from '@angular/common';
+import { DatePipe, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Conference } from '../models/conference';
 
-/** Seuil en dessous duquel il reste "peu de places" (bouton orangé). */
-const LOW_PLACES_THRESHOLD = 10;
-
-type Availability = 'available' | 'low' | 'full';
-
 @Component({
   selector: 'app-conference-list',
-  imports: [FormsModule, NgClass, DatePipe, UpperCasePipe],
+  imports: [FormsModule, DatePipe, UpperCasePipe],
   templateUrl: './conference-list.html',
   styleUrl: './conference-list.css',
 })
 export class ConferenceList {
-  protected readonly conferences = signal<Conference[]>([
+  // Liste des conférences (propriété classique : on modifie directement nbParticipants)
+  readonly conferences: Conference[] = [
     {
       id: 1,
       title: 'Angular 21 Conference',
@@ -43,41 +39,37 @@ export class ConferenceList {
       maxParticipants: 150,
       nbParticipants: 150,
     },
-  ]);
+  ];
 
-  /** Texte saisi dans la zone de recherche (two-way binding via ngModel). */
-  protected readonly searchTerm = signal('');
+  // Texte saisi dans la zone de recherche (two-way binding avec [(ngModel)])
+  readonly searchTerm = signal('');
 
-  /** Conférence dont les détails sont affichés (clic sur la carte). */
-  protected readonly selectedId = signal<number | null>(null);
+  // id de la conférence dont on affiche les détails (0 = aucune)
+  readonly selectedId = signal(0);
 
-  /** Liste filtrée : se recalcule seule quand la recherche ou les données changent. */
-  protected readonly filtered = computed(() => {
+  // Date du jour : sert à ne garder que les conférences "à venir"
+  readonly today = new Date();
+
+  // Signal computed : se recalcule tout seul quand searchTerm change
+  readonly filtered = computed(() => {
     const term = this.searchTerm().trim().toLowerCase();
-    return this.conferences().filter((c) => c.title.toLowerCase().includes(term));
+    return this.conferences.filter(
+      (c) => c.date >= this.today && c.title.toLowerCase().includes(term),
+    );
   });
 
-  protected remainingPlaces(c: Conference): number {
+  remainingPlaces(c: Conference): number {
     return c.maxParticipants - c.nbParticipants;
   }
 
-  /** available (vert) / low (orangé, < 10 places) / full (rouge, 0 place) */
-  protected availability(c: Conference): Availability {
-    const remaining = this.remainingPlaces(c);
-    if (remaining <= 0) return 'full';
-    if (remaining < LOW_PLACES_THRESHOLD) return 'low';
-    return 'available';
+  // +1 participant par clic (sans dépasser la capacité maximale)
+  register(c: Conference): void {
+    if (this.remainingPlaces(c) > 0) {
+      c.nbParticipants++;
+    }
   }
 
-  /** +1 participant par clic (sans dépasser la capacité maximale). */
-  protected register(c: Conference): void {
-    if (this.remainingPlaces(c) <= 0) return;
-    this.conferences.update((list) =>
-      list.map((x) => (x.id === c.id ? { ...x, nbParticipants: x.nbParticipants + 1 } : x)),
-    );
-  }
-
-  protected toggleDetails(id: number): void {
-    this.selectedId.update((current) => (current === id ? null : id));
+  toggleDetails(id: number): void {
+    this.selectedId.update((current) => (current === id ? 0 : id));
   }
 }

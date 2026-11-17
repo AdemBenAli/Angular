@@ -4,17 +4,16 @@
     <div>
       <h2>Zone de notifications</h2>
 
-      @let count = notifications().length;
-      @if (count === 0) {
+      @if (notifications().length === 0) {
         <p>Vous n'avez aucune nouvelle notification.</p>
-      } @else if (count === 1) {
+      } @else if (notifications().length === 1) {
         <p>Vous avez 1 nouvelle notification.</p>
       } @else {
-        <p>Vous avez {{ count }} nouvelles notifications.</p>
+        <p>Vous avez {{ notifications().length }} nouvelles notifications.</p>
       }
 
-      <button type="button" (click)="toggle()" [attr.aria-expanded]="visible()">
-        {{ visible() ? 'Masquer' : 'Afficher' }} les notifications
+      <button type="button" (click)="toggle()">
+        @if (visible()) { Masquer } @else { Afficher } les notifications
       </button>
 
       @if (visible()) {
