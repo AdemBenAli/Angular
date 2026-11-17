@@ -3,21 +3,16 @@ import { App } from './app';
 
 describe('App', () => {
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [App],
-    }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [App] }).compileComponents();
   });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it('should render title', async () => {
+  it('affiche les 6 sections de la page d\'accueil', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, Angular_Project');
+    const html = fixture.nativeElement as HTMLElement;
+    for (const tag of ['app-header', 'app-navbar', 'app-user-profile', 'app-friends-list', 'app-notifications', 'app-footer']) {
+      expect(html.querySelector(tag)).not.toBeNull();
+    }
+    expect(html.querySelector('h1')?.textContent).toBe('Conference App');
   });
 });

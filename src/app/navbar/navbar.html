@@ -1,0 +1,9 @@
+<nav class="navbar" aria-label="Navigation principale">
+  @for (link of links; track link.target) {
+    <a
+      [href]="'#' + link.target"
+      [class.active]="active() === link.target"
+      (click)="select(link.target)"
+    >{{ link.label }}</a>
+  }
+</nav>

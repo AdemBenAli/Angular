@@ -1,0 +1,23 @@
+<section class="card card--green">
+  <div class="card__layout">
+    <div class="card__icon" aria-hidden="true">👥</div>
+    <div>
+      <h2>Liste des amis</h2>
+
+      <div class="bindings">
+        <!-- 1. Property binding (modèle → vue) : la saisie ne modifie pas le modèle -->
+        <input type="text" [value]="name()" title="Property binding : [value]" aria-label="Property binding" />
+        <!-- 2. Property + event binding : on recrée "à la main" le two-way -->
+        <input type="text" [value]="name()" (input)="onInput($event)" title="Event binding : (input)" aria-label="Event binding" />
+        <!-- 3. Two-way data binding (modèle ↔ vue) -->
+        <input type="text" [(ngModel)]="name" title="Two-way binding : [(ngModel)]" aria-label="Two-way binding" />
+      </div>
+
+      <ul>
+        @for (friend of friends; track friend) {
+          <li>{{ friend }}</li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>

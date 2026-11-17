@@ -1,1 +1,52 @@
-/* You can add global styles to this file, and also import other style files */
+/* Styles globaux : palette, carte "section" partagée par plusieurs composants */
+:root {
+  --navy: #17375e;
+  --blue: #2b6cb0;
+  --page-bg: #eef2f8;
+  --text: #1f2937;
+  --muted: #64748b;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  color: var(--text);
+  background: var(--page-bg);
+}
+
+/* Les composants sont des éléments personnalisés : on les passe en bloc */
+app-header, app-navbar, app-user-profile, app-friends-list,
+app-notifications, app-conference-list, app-footer { display: block; }
+
+/* ----- Carte "section" réutilisable (profil, amis, notifications, conférences) ----- */
+.card {
+  background: #fff;
+  border-left: 6px solid var(--accent);
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(23, 55, 94, 0.08);
+  padding: 1.5rem 2rem;
+  margin-bottom: 1rem;
+}
+.card--blue   { --accent: #2b6cb0; --icon-bg: #eaf1fb; }
+.card--green  { --accent: #22a06b; --icon-bg: #e6f5ef; }
+.card--orange { --accent: #f59e0b; --icon-bg: #fff1d6; }
+.card--teal   { --accent: #0f9d8a; --icon-bg: #e0fbf8; }
+
+.card h2 { margin: 0 0 0.75rem; color: var(--navy); font-size: 1.6rem; }
+
+.card__layout { display: flex; align-items: center; gap: 1.5rem; }
+
+.card__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--icon-bg);
+  font-size: 1.8rem;
+}

@@ -1,0 +1,29 @@
+<section class="card card--orange">
+  <div class="card__layout">
+    <div class="card__icon" aria-hidden="true">🔔</div>
+    <div>
+      <h2>Zone de notifications</h2>
+
+      @let count = notifications().length;
+      @if (count === 0) {
+        <p>Vous n'avez aucune nouvelle notification.</p>
+      } @else if (count === 1) {
+        <p>Vous avez 1 nouvelle notification.</p>
+      } @else {
+        <p>Vous avez {{ count }} nouvelles notifications.</p>
+      }
+
+      <button type="button" (click)="toggle()" [attr.aria-expanded]="visible()">
+        {{ visible() ? 'Masquer' : 'Afficher' }} les notifications
+      </button>
+
+      @if (visible()) {
+        <ul>
+          @for (n of notifications(); track n) {
+            <li>{{ n }}</li>
+          }
+        </ul>
+      }
+    </div>
+  </div>
+</section>

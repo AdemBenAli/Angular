@@ -1,0 +1,8 @@
+.header {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #fff;
+  background: linear-gradient(135deg, var(--navy), var(--blue));
+}
+h1 { margin: 0 0 0.5rem; font-size: 2.2rem; }
+p  { margin: 0; opacity: 0.95; }
